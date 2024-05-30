@@ -15,6 +15,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 abstract class FirestoreDtoManager implements DtoManagerInterface
 {
+    public const DTO_CLASS = 'REPLACE_ME';
+
     protected CollectionReference $collection;
 
     public function __construct(
@@ -107,5 +109,8 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         return $this->collection->count();
     }
 
-    abstract public function getClass(): string;
+    public function getClass(): string
+    {
+        return static::DTO_CLASS;
+    }
 }

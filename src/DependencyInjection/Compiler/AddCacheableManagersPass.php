@@ -27,9 +27,9 @@ class AddCacheableManagersPass implements CompilerPassInterface
                 ->setClass(CacheableFirestoreDtoManager::class)
                 ->setDecoratedService($id)
                 ->setAutowired(true)
-                ->addTag('firestore_odm.manager', ['dto' => $className::getClass()]);
+                ->addTag('firestore_odm.manager', ['dto' => $className::DTO_CLASS]);
 
-            $parts = explode('\\', $className::getClass());
+            $parts = explode('\\', $className::DTO_CLASS);
             $dtoName = \array_pop($parts);
             $container->registerAliasForArgument($id.'.cache', DtoManagerInterface::class, strtolower($dtoName).'Manager');
         }
