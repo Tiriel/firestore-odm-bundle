@@ -1,6 +1,6 @@
 <?php
 
-namespace TirielFirestoreOdmBundle\DependencyInjection\Compiler;
+namespace Tiriel\FirestoreOdmBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
