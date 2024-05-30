@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Manager;
+namespace Tiriel\FirestoreOdmBundle\Manager;
 
 use Symfony\Component\Uid\Uuid;
 use Tiriel\FirestoreOdmBundle\Dto\Interface\PersistableDtoInterface;
@@ -14,7 +14,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-#[AutoconfigureTag('app.firestore_manager')]
 abstract class FirestoreDtoManager implements DtoManagerInterface
 {
     protected CollectionReference $collection;

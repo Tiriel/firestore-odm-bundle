@@ -2,9 +2,9 @@
 
 namespace TirielFirestoreOdmBundle\DependencyInjection\Compiler;
 
-use App\Manager\FirestoreDtoManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Tiriel\FirestoreOdmBundle\Manager\FirestoreDtoManager;
 
 class AddCacheableManagersPass implements CompilerPassInterface
 {
@@ -13,9 +13,9 @@ class AddCacheableManagersPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        foreach ($container->findTaggedServiceIds('app.firestore_manager') as $id => $tags) {
+        foreach ($container->findTaggedServiceIds('firestorm_odm.manager') as $id => $tags) {
             /** @var FirestoreDtoManager $id */
-            $tags['app.firestore_manager'][0]['dto'] = $id::getClass();
+            $tags['firestorm_odm.manager'][0]['dto'] = $id::getClass();
 
             $container->register($id, $id)
                 ->setAutowired(true)

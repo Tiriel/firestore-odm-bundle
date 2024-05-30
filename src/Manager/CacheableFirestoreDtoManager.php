@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Manager;
+namespace Tiriel\FirestoreOdmBundle\Manager;
 
 use Tiriel\FirestoreOdmBundle\Dto\Interface\PersistableDtoInterface;
 use Tiriel\FirestoreOdmBundle\Manager\Interface\DtoManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 
-#[AsDecorator(FirestoreDtoManager::class)]
 abstract class CacheableFirestoreDtoManager extends FirestoreDtoManager
 {
     protected iterable $documents = [];
