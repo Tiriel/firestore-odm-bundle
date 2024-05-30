@@ -7,7 +7,7 @@ use Tiriel\FirestoreOdmBundle\Manager\Interface\DtoManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 
-abstract class CacheableFirestoreDtoManager extends FirestoreDtoManager
+class CacheableFirestoreDtoManager implements DtoManagerInterface
 {
     protected iterable $documents = [];
 
@@ -16,7 +16,6 @@ abstract class CacheableFirestoreDtoManager extends FirestoreDtoManager
     protected ?int $count = null;
 
     public function __construct(
-        #[AutowireDecorated]
         protected readonly DtoManagerInterface $inner,
     ) {
     }

@@ -4,9 +4,8 @@ services:
         autoconfigure: false
 
     tiriel.firestore_odm.dto_manager:
-        class: Tiriel\FirestoreOdmBundle\FirestoreDtoManager
+        class: Tiriel\FirestoreOdmBundle\Manager\FirestoreDtoManager
         abstract: true
-        tags: ['firestore_odm.manager']
 
     tiriel.firestore_odm.cacheable_manager:
         class: Tiriel\FirestoreOdmBundle\Manager\CacheableFirestoreDtoManager
@@ -14,7 +13,9 @@ services:
 
     tiriel.firestore_odm.dto_value_resolver:
         class: Tiriel\FirestoreOdmBundle\ValueResolver\FirestoreDtoValueResolver
+        arguments:
+            $locator: !tagged_locator { tag: firestore_odm.manager, index_by: dto }
         tags:
             - 'controller.argument_value_resolver':
-                name: 'firestore_dto'
+                  name: 'firestore_dto'
 
