@@ -13,7 +13,7 @@ use Tiriel\FirestoreOdmBundle\Manager\FirestoreDtoManager;
 class FirestoreDtoValueResolver implements ValueResolverInterface
 {
     public function __construct(
-        #[TaggedLocator('app.firestore_manager', indexAttribute: 'dto')]
+        #[TaggedLocator('firestorm_odm.manager', indexAttribute: 'dto')]
         protected readonly ContainerInterface $locator,
     ) {
     }
