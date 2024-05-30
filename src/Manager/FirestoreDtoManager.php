@@ -2,6 +2,7 @@
 
 namespace Tiriel\FirestoreOdmBundle\Manager;
 
+use Google\Cloud\Firestore\FirestoreClient;
 use Symfony\Component\Uid\Uuid;
 use Tiriel\FirestoreOdmBundle\Dto\Interface\PersistableDtoInterface;
 use Tiriel\FirestoreOdmBundle\Exception\EntryNotFoundFirestoreException;
@@ -9,8 +10,6 @@ use Tiriel\FirestoreOdmBundle\Exception\NonUniqueEntryFirestoreException;
 use Tiriel\FirestoreOdmBundle\Manager\Interface\DtoManagerInterface;
 use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
-use Kreait\Firebase\Contract\Firestore;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -20,9 +19,9 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
 
     public function __construct(
         protected NormalizerInterface&DenormalizerInterface $normalizer,
-        Firestore $firestore
+        FirestoreClient $firestoreClient
     ) {
-        $this->collection = $firestore->database()->collection($this->getClass());
+        $this->collection = $firestoreClient->collection($this->getClass());
     }
 
     public function get(string $id): ?PersistableDtoInterface
