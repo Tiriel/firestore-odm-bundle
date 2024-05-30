@@ -18,5 +18,6 @@ services:
     tiriel.firestore_odm.dto_value_resolver:
         class: Tiriel\FirestoreOdmBundle\ValueResolver\FirestoreDtoValueResolver
         tags:
-            - { 'controller.argument_value_resolver', name: 'firestore_dto' }
+            - 'controller.argument_value_resolver':
+                name: 'firestore_dto'
 
