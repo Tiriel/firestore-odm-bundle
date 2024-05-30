@@ -14,10 +14,12 @@ class AddCacheableManagersPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         foreach ($container->findTaggedServiceIds('firestore_odm.manager') as $id => $tags) {
-            /** @var FirestoreDtoManager $id */
-            $tags['firestorm_odm.manager'][0]['dto'] = $id::getClass();
+            $def = $container->getDefinition($id);
+            /** @var class-string<FirestoreDtoManager> $className */
+            $className = $def->getClass();
+            $tags['firestorm_odm.manager'][0]['dto'] = $className::getClass();
 
-            $container->register($id, $id)
+            $container->register($id, $className)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
                 ->setTags($tags)
