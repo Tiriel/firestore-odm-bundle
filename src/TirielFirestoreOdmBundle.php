@@ -16,19 +16,21 @@ class TirielFirestoreOdmBundle extends AbstractBundle
     {
         $container->import('../config/services.yaml');
 
-        if (\is_string($config['firestore_odm']['service_account']) && str_contains($config['firestore_odm']['service_account'], 'env(')) {
-            $config['firestore_odm']['service_account'] = $builder->resolveEnvPlaceholders($config['firestore_odm']['service_account']);
+        if (\is_string($config['service_account']) && str_contains($config['service_account'], 'env(')) {
+            $config['service_account'] = $builder->resolveEnvPlaceholders($config['service_account']);
         }
 
-        $config['firestore_odm']['service_account'] = \is_array($config['firestore_odm']['service_account'])
-            ?: $builder->getParameterBag()->resolveValue($config['firestore_odm']['service_account']);
+        $config['service_account'] = \is_array($config['service_account'])
+            ?: $builder->getParameterBag()->resolveValue($config['service_account']);
 
-        $id = sprintf("firestore_odm.%s.firestore_client", $config['firestore_odm']['project_name']);
+        $id = sprintf("firestore_odm.%s.firestore_client", $config['project_name']);
         $builder->register($id, FirestoreClient::class)
-            ->setFactory([new FirestoreFactory(), 'create'])
-            ->addArgument($config['firestore_odm'])
+            ->setFactory([FirestoreFactory::class, 'create'])
+            ->addArgument($config)
             ->setPublic(false)
         ;
+
+        $builder->setAlias(FirestoreClient::class, $id);
     }
 
     public function build(ContainerBuilder $container)
@@ -57,6 +59,6 @@ class TirielFirestoreOdmBundle extends AbstractBundle
                     ->info("Only use if your database's url cannot be guessed from your service account file")
                 ->end()
             ->end()
-            ;
+        ;
     }
 }
