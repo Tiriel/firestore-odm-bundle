@@ -19,4 +19,6 @@ interface DtoManagerInterface
     public function remove(PersistableDtoInterface $dto): void;
 
     public function count(): int;
+
+    public function getClass(): string;
 }

@@ -22,7 +22,7 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         protected NormalizerInterface&DenormalizerInterface $normalizer,
         Firestore $firestore
     ) {
-        $this->collection = $firestore->database()->collection(static::getClass());
+        $this->collection = $firestore->database()->collection($this->getClass());
     }
 
     public function get(string $id): ?PersistableDtoInterface
@@ -30,7 +30,7 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         $doc = $this->collection->document($id)->snapshot();
 
         if (!$doc->exists()) {
-            throw new EntryNotFoundFirestoreException($id, static::getClass());
+            throw new EntryNotFoundFirestoreException($id, $this->getClass());
         }
 
         return $this->normalizer->denormalize(
@@ -79,7 +79,7 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         $setId->call($dto);
 
         if ($this->collection->document($dto->getId())->snapshot()->exists()) {
-            throw new NonUniqueEntryFirestoreException($dto->getId(), static::getClass());
+            throw new NonUniqueEntryFirestoreException($dto->getId(), $this->getClass());
         }
 
         $this->collection->document($dto->getId())->set($this->normalizer->normalize($dto, 'array'));
@@ -88,7 +88,7 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
     public function update(PersistableDtoInterface $dto): void
     {
         if (!$this->collection->document($dto->getId())->snapshot()->exists()) {
-            throw new EntryNotFoundFirestoreException($dto->getId(), static::getClass());
+            throw new EntryNotFoundFirestoreException($dto->getId(), $this->getClass());
         }
 
         $this->collection->document($dto->getId())->set($this->normalizer->normalize($dto, 'array'));
@@ -97,7 +97,7 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
     public function remove(PersistableDtoInterface $dto): void
     {
         if (!$this->collection->document($dto->getId())->snapshot()->exists()) {
-            throw new EntryNotFoundFirestoreException($dto->getId(), static::getClass());
+            throw new EntryNotFoundFirestoreException($dto->getId(), $this->getClass());
         }
 
         $this->collection->document($dto->getId())->delete();
@@ -108,5 +108,5 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         return $this->collection->count();
     }
 
-    abstract public static function getClass(): string;
+    abstract public function getClass(): string;
 }

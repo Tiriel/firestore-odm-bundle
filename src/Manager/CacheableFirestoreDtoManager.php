@@ -92,4 +92,9 @@ class CacheableFirestoreDtoManager implements DtoManagerInterface
     {
         return $this->count ??= $this->inner->count();
     }
+
+    public function getClass(): string
+    {
+        return $this->inner->getClass();
+    }
 }
