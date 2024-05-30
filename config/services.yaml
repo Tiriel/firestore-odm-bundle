@@ -3,13 +3,10 @@ services:
         autowire: false
         autoconfigure: false
 
-    _instanceof:
-        Tiriel\FirestoreOdmBundle\Manager\FirestoreDtoManager:
-            tags: ['firestorm_odm.manager']
-
     tiriel.firestore_odm.dto_manager:
         class: Tiriel\FirestoreOdmBundle\FirestoreDtoManager
         abstract: true
+        tags: ['firestore_odm.manager']
 
     tiriel.firestore_odm.cacheable_manager:
         class: Tiriel\FirestoreOdmBundle\Manager\CacheableFirestoreDtoManager
