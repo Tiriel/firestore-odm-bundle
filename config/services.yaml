@@ -13,7 +13,7 @@ services:
 
     tiriel.firestore_odm.cacheable_manager:
         class: Tiriel\FirestoreOdmBundle\Manager\CacheableFirestoreDtoManager
-        decorates: '@tiriel.firestore_odm.dto_manager'
+        decorates: 'tiriel.firestore_odm.dto_manager'
 
     tiriel.firestore_odm.dto_value_resolver:
         class: Tiriel\FirestoreOdmBundle\ValueResolver\FirestoreDtoValueResolver
