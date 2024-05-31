@@ -3,6 +3,11 @@ services:
         autowire: false
         autoconfigure: false
 
+    tiriel.firestore_odm.dto_id_normalizer:
+        class: Tiriel\FirestoreOdmBundle\Serializer\Normalizer\DtoIdNormalizer
+        arguments:
+            $normalizer: '@serializer.normalizer.object'
+
     tiriel.firestore_odm.dto_manager:
         class: Tiriel\FirestoreOdmBundle\Manager\FirestoreDtoManager
         abstract: true
