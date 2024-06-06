@@ -3,41 +3,39 @@
 namespace Tiriel\FirestoreOdmBundle\Manager;
 
 use Google\Cloud\Firestore\FirestoreClient;
+use Google\Cloud\Firestore\Query;
 use Symfony\Component\Uid\Uuid;
+use Tiriel\FirestoreOdmBundle\Pagination\CursorPaginator;
+use Tiriel\FirestoreOdmBundle\Pagination\Interface\PaginatorInterface;
 use Tiriel\FirestoreOdmBundle\Dto\Interface\PersistableDtoInterface;
 use Tiriel\FirestoreOdmBundle\Exception\EntryNotFoundFirestoreException;
 use Tiriel\FirestoreOdmBundle\Exception\NonUniqueEntryFirestoreException;
 use Tiriel\FirestoreOdmBundle\Manager\Interface\DtoManagerInterface;
-use Google\Cloud\Firestore\CollectionReference;
-use Google\Cloud\Firestore\DocumentSnapshot;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Tiriel\FirestoreOdmBundle\Pagination\OffsetPaginator;
+use Tiriel\FirestoreOdmBundle\Query\HydratorCollectionReference;
 
 abstract class FirestoreDtoManager implements DtoManagerInterface
 {
     public const DTO_CLASS = 'REPLACE_ME';
 
-    protected CollectionReference $collection;
+    protected Query $collection;
 
     public function __construct(
         protected NormalizerInterface&DenormalizerInterface $normalizer,
         FirestoreClient $firestoreClient
     ) {
-        $this->collection = $firestoreClient->collection($this->getClass());
+        $this->collection = new HydratorCollectionReference(
+            $firestoreClient->collection($this->getClass()),
+            $this->normalizer,
+            static::getClass()
+        );
     }
 
     public function get(string $id): ?PersistableDtoInterface
     {
-        $doc = $this->collection->document($id)->snapshot();
-
-        if (!$doc->exists()) {
-            throw new EntryNotFoundFirestoreException($id, $this->getClass());
-        }
-
-        return $this->normalizer->denormalize(
-            $doc->data(),
-            static::getClass(),
-        );
+        return $this->collection->document($id);
     }
 
     public function search(array $criteria): iterable
@@ -55,53 +53,52 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
             $query = $query->where($path, $operator, $value);
         }
 
-        $docs = $query->documents()->getIterator()->getArrayCopy();
-
-        return $this->normalizer->denormalize(
-            array_map(fn(DocumentSnapshot $doc) => $doc->data(), $docs),
-            static::getClass().'[]'
-        );
+        return $this->collection->documents();
     }
 
     public function getList(): iterable
     {
-        $docs = $this->collection->documents()->getIterator()->getArrayCopy();
+        return $this->collection->documents();
+    }
 
-        return $this->normalizer->denormalize(
-            array_map(fn(DocumentSnapshot $doc) => $doc->data(), $docs),
-            static::getClass().'[]',
-            'array'
-        );
+    public function getPaginatedList(int $limit, int $page = 1): PaginatorInterface
+    {
+        return new OffsetPaginator($this->collection, $limit, $page);
+    }
+
+    public function getCursoredList(int $limit, int|string|null $startAfterId = null): PaginatorInterface
+    {
+        return new CursorPaginator($this->collection, $limit, $startAfterId);
     }
 
     public function create(PersistableDtoInterface $dto): void
     {
-        $setId = \Closure::fromCallable(fn() => $this->id = Uuid::v7());
+        $setId = (fn() => $this->id = Uuid::v7())(...);
         $setId->call($dto);
 
-        if ($this->collection->document($dto->getId())->snapshot()->exists()) {
+        if ($this->collection->exists($dto->getId())) {
             throw new NonUniqueEntryFirestoreException($dto->getId(), $this->getClass());
         }
 
-        $this->collection->document($dto->getId())->set($this->normalizer->normalize($dto, 'array'));
+        $this->collection->set($dto);
     }
 
     public function update(PersistableDtoInterface $dto): void
     {
-        if (!$this->collection->document($dto->getId())->snapshot()->exists()) {
+        if (!$this->collection->exists($dto->getId())) {
             throw new EntryNotFoundFirestoreException($dto->getId(), $this->getClass());
         }
 
-        $this->collection->document($dto->getId())->set($this->normalizer->normalize($dto, 'array'));
+        $this->collection->set($dto);
     }
 
     public function remove(PersistableDtoInterface $dto): void
     {
-        if (!$this->collection->document($dto->getId())->snapshot()->exists()) {
+        if (!$this->collection->exists($dto->getId())) {
             throw new EntryNotFoundFirestoreException($dto->getId(), $this->getClass());
         }
 
-        $this->collection->document($dto->getId())->delete();
+        $this->collection->delete($dto->getId());
     }
 
     public function count(): int

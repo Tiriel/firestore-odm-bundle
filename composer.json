@@ -3,12 +3,13 @@
     "description": "Small and Basic ODM for Google Cloud Firestore Database",
     "type": "symfony-bundle",
     "require": {
-        "symfony/http-kernel": "^7.0",
-        "symfony/config": "^7.0",
-        "symfony/dependency-injection": "^7.0",
-        "symfony/serializer": "^7.0",
+        "symfony/http-kernel": "^6.4||^7.0",
+        "symfony/config": "^6.4||^7.0",
+        "symfony/dependency-injection": "^6.4||^7.0",
+        "symfony/serializer": "^6.4||^7.0",
         "google/cloud-firestore": "^1.43",
-        "symfony/uid": "^7.0"
+        "symfony/uid": "^6.4||^7.0",
+        "symfony/property-access": "^6.4||^7.0"
     },
     "license": "MIT",
     "autoload": {

@@ -2,7 +2,9 @@
 
 namespace Tiriel\FirestoreOdmBundle\Manager\Interface;
 
+use Tiriel\FirestoreOdmBundle\Pagination\Interface\PaginatorInterface;
 use Tiriel\FirestoreOdmBundle\Dto\Interface\PersistableDtoInterface;
+use Tiriel\FirestoreOdmBundle\Enum\OrderDir;
 use Tiriel\FirestoreOdmBundle\Exception\EntryNotFoundFirestoreException;
 use Tiriel\FirestoreOdmBundle\Exception\NonUniqueEntryFirestoreException;
 
@@ -34,6 +36,20 @@ interface DtoManagerInterface
      * @return iterable the full list of documents from the collection
      */
     public function getList(): iterable;
+
+    /**
+     * @param int $limit the number of documents to include
+     * @param int $page used to calculate the offset, times the limit
+     * @return PaginatorInterface a paginated list of documents from the collection
+     */
+    public function getPaginatedList(int $limit, int $page = 1): PaginatorInterface;
+
+    /**
+     * @param int $limit the number of documents to include
+     * @param string|null $startAfterId the last id of the previous result set
+     * @return PaginatorInterface a paginated list of documents from the collection
+     */
+    public function getCursoredList(int $limit, ?string $startAfterId = null): PaginatorInterface;
 
     /**
      * Persists a new entry in Firestore and generates a new id
