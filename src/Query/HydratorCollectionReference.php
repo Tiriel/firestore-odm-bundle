@@ -7,6 +7,7 @@ use Google\Cloud\Core\Iterator\PageIterator;
 use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
+use Google\Cloud\Firestore\Query;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -17,7 +18,7 @@ use Tiriel\FirestoreOdmBundle\Exception\EntryNotFoundFirestoreException;
 class HydratorCollectionReference extends CollectionReference
 {
     public function __construct(
-        protected readonly CollectionReference $inner,
+        protected Query $inner,
         protected readonly NormalizerInterface&DenormalizerInterface $normalizer,
         protected readonly string $className,
     )
@@ -31,11 +32,12 @@ class HydratorCollectionReference extends CollectionReference
         return $this->normalizer->denormalize(
             array_map(fn(DocumentSnapshot $doc) => $doc->data(), $docs),
             $this->className.'[]',
-            'array'
+            'array',
+            $options,
         );
     }
 
-    public function document($documentId): PersistableDtoInterface
+    public function document($documentId, array $options = []): PersistableDtoInterface
     {
         $doc = $this->inner->document($documentId)->snapshot();
 
@@ -46,6 +48,8 @@ class HydratorCollectionReference extends CollectionReference
         return $this->normalizer->denormalize(
             $doc->data(),
             $this->className,
+            null,
+            $options
         );
     }
 
@@ -122,5 +126,105 @@ class HydratorCollectionReference extends CollectionReference
     public function parent(): DocumentReference
     {
         return $this->inner->parent();
+    }
+
+    public function count(array $options = [])
+    {
+        return $this->inner->count($options);
+    }
+
+    public function sum(string $field, array $options = [])
+    {
+        return $this->inner->sum($field, $options);
+    }
+
+    public function avg(string $field, array $options = [])
+    {
+        return $this->inner->avg($field, $options);
+    }
+
+    public function addAggregation($aggregate)
+    {
+        return $this->inner->addAggregation($aggregate);
+    }
+
+    public function select(array $fieldPaths)
+    {
+        $this->inner = $this->inner->select($fieldPaths);
+
+        return $this;
+    }
+
+    public function where($fieldPath, $operator = null, $value = null)
+    {
+        $this->inner = $this->inner->where($fieldPath, $operator, $value);
+
+        return $this;
+    }
+
+    public function orderBy($fieldPath, $direction = self::DIR_ASCENDING)
+    {
+        $this->inner = $this->inner->orderBy($fieldPath, $direction);
+
+        return $this;
+    }
+
+    public function limit($number)
+    {
+        $this->inner = $this->inner->limit($number);
+
+        return $this;
+    }
+
+    public function limitToLast($number)
+    {
+        $this->inner = $this->inner->limitToLast($number);
+
+        return $this;
+    }
+
+    public function offset($number)
+    {
+        $this->inner = $this->inner->offset($number);
+
+        return $this;
+    }
+
+    public function startAt($fieldValues)
+    {
+        $this->inner = $this->inner->startAt($fieldValues);
+
+        return $this;
+    }
+
+    public function startAfter($fieldValues)
+    {
+        $this->inner = $this->inner->startAfter($fieldValues);
+
+        return $this;
+    }
+
+    public function endBefore($fieldValues)
+    {
+        $this->inner = $this->inner->endBefore($fieldValues);
+
+        return $this;
+    }
+
+    public function endAt($fieldValues)
+    {
+        $this->inner = $this->inner->endAt($fieldValues);
+
+        return $this;
+    }
+
+    public function queryHas($key)
+    {
+        return $this->inner->queryHas($key);
+    }
+
+    public function queryKey($key)
+    {
+        return $this->inner->queryKey($key);
     }
 }

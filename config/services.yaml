@@ -7,6 +7,8 @@ services:
         class: Tiriel\FirestoreOdmBundle\Serializer\Normalizer\DtoIdNormalizer
         arguments:
             $normalizer: '@serializer.normalizer.object'
+        tags:
+            - { name: 'serializer.normalizer' }
 
     tiriel.firestore_odm.dto_manager:
         class: Tiriel\FirestoreOdmBundle\Manager\FirestoreDtoManager

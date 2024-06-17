@@ -15,7 +15,7 @@ interface DtoManagerInterface
      *
      * @throws EntryNotFoundFirestoreException is the given id is not found
      */
-    public function get(string $id): ?PersistableDtoInterface;
+    public function get(string $id, array $options = []): ?PersistableDtoInterface;
 
     /**
      * @return iterable the DTOs matching the given criteria
@@ -35,7 +35,7 @@ interface DtoManagerInterface
     /**
      * @return iterable the full list of documents from the collection
      */
-    public function getList(): iterable;
+    public function getList(array $options = []): iterable;
 
     /**
      * @param int $limit the number of documents to include

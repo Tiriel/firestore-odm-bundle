@@ -33,14 +33,13 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         );
     }
 
-    public function get(string $id): ?PersistableDtoInterface
+    public function get(string $id, array $options = []): ?PersistableDtoInterface
     {
-        return $this->collection->document($id);
+        return $this->collection->document($id, $options);
     }
 
     public function search(array $criteria): iterable
     {
-        $query = $this->collection;
         if (!is_array(current($criteria))) {
             $criteria = [$criteria];
         }
@@ -50,15 +49,15 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
                 continue;
             }
             [$path, $operator, $value] = $criterion;
-            $query = $query->where($path, $operator, $value);
+            $this->collection->where($path, $operator, $value);
         }
 
         return $this->collection->documents();
     }
 
-    public function getList(): iterable
+    public function getList(array $options = []): iterable
     {
-        return $this->collection->documents();
+        return $this->collection->documents($options);
     }
 
     public function getPaginatedList(int $limit, int $page = 1): PaginatorInterface
