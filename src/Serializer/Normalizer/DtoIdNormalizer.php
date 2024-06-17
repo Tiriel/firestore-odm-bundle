@@ -31,7 +31,10 @@ class DtoIdNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
-        $setter = \Closure::fromCallable(fn($id) => $this->id = Uuid::fromString($id));
+        if (isset($data['id'])) {
+            $data['id'] = Uuid::fromString($data['id']);
+        }
+        $setter = (fn($id) => $this->id = $id)(...);
 
         $dto = $this->normalizer->denormalize($data, $type, $format, $context);
         $setter->call($dto, $data['id']);

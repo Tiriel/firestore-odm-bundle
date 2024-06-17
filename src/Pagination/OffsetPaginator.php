@@ -3,16 +3,19 @@
 namespace Tiriel\FirestoreOdmBundle\Pagination;
 
 use Google\Cloud\Firestore\Query;
-use Tiriel\FirestoreOdmBundle\Manager\Interface\DtoManagerInterface;
 
 class OffsetPaginator extends Paginator
 {
+    protected int $page;
+
     public function __construct(
         Query $manager,
         int $maxResults,
-        protected int $page = 1,
+        int $page = 1,
+        array $options = [],
     ) {
-        parent::__construct($manager, $maxResults);
+        parent::__construct($manager, $maxResults, $options);
+        $this->page = $page;
     }
 
     protected function prepareIterator(): void
@@ -22,7 +25,7 @@ class OffsetPaginator extends Paginator
 
     protected function prepareQuery(): void
     {
-        $this->query
+        $this->query = $this->query
             ->limit($this->maxResults)
             ->offset($this->maxResults * ($this->page - 1));
     }

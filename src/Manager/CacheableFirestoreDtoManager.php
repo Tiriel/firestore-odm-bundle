@@ -64,14 +64,14 @@ class CacheableFirestoreDtoManager implements DtoManagerInterface
         return $this->documents;
     }
 
-    public function getPaginatedList(int $limit, int $page = 1): PaginatorInterface
+    public function getPaginatedList(int $limit, int $page = 1, array $options = []): PaginatorInterface
     {
-        return $this->inner->getPaginatedList($limit, $page);
+        return $this->inner->getPaginatedList($limit, $page, $options);
     }
 
-    public function getCursoredList(int $limit, ?string $startAfterId = null): PaginatorInterface
+    public function getCursoredList(int $limit, ?string $startAfterId = null, array $options = []): PaginatorInterface
     {
-        return $this->inner->getPaginatedList($limit, $startAfterId);
+        return $this->inner->getPaginatedList($limit, $startAfterId, $options);
     }
 
     public function create(PersistableDtoInterface $dto): void

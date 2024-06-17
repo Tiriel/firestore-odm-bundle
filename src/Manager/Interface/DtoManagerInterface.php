@@ -42,14 +42,14 @@ interface DtoManagerInterface
      * @param int $page used to calculate the offset, times the limit
      * @return PaginatorInterface a paginated list of documents from the collection
      */
-    public function getPaginatedList(int $limit, int $page = 1): PaginatorInterface;
+    public function getPaginatedList(int $limit, int $page = 1, array $options = []): PaginatorInterface;
 
     /**
      * @param int $limit the number of documents to include
      * @param string|null $startAfterId the last id of the previous result set
      * @return PaginatorInterface a paginated list of documents from the collection
      */
-    public function getCursoredList(int $limit, ?string $startAfterId = null): PaginatorInterface;
+    public function getCursoredList(int $limit, ?string $startAfterId = null, array $options = []): PaginatorInterface;
 
     /**
      * Persists a new entry in Firestore and generates a new id

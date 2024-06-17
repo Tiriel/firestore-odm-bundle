@@ -13,8 +13,9 @@ abstract class Paginator implements PaginatorInterface
     protected ?int $count = null;
 
     public function __construct(
-        protected readonly Query $query,
+        protected Query $query,
         protected readonly int $maxResults,
+        protected readonly array $options = [],
     )
     {
     }
@@ -23,7 +24,7 @@ abstract class Paginator implements PaginatorInterface
     {
         $this->prepareQuery();
 
-        $this->elements = $this->query->documents();
+        $this->elements = $this->query->documents($this->options);
         $this->count = \count((array) $this->elements);
 
         $this->prepareIterator();

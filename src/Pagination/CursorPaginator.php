@@ -10,9 +10,9 @@ class CursorPaginator extends Paginator
         Query $manager,
         int $maxResults,
         protected int|string|null $startAfterId = null,
-        protected array $options = []
+        array $options = []
     ) {
-        parent::__construct($manager, $maxResults);
+        parent::__construct($manager, $maxResults, $options);
     }
 
     public function prepareIterator(): void

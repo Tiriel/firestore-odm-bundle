@@ -60,14 +60,14 @@ abstract class FirestoreDtoManager implements DtoManagerInterface
         return $this->collection->documents($options);
     }
 
-    public function getPaginatedList(int $limit, int $page = 1): PaginatorInterface
+    public function getPaginatedList(int $limit, int $page = 1, array $options = []): PaginatorInterface
     {
-        return new OffsetPaginator($this->collection, $limit, $page);
+        return new OffsetPaginator($this->collection, $limit, $page, $options);
     }
 
-    public function getCursoredList(int $limit, int|string|null $startAfterId = null): PaginatorInterface
+    public function getCursoredList(int $limit, int|string|null $startAfterId = null, array $options = []): PaginatorInterface
     {
-        return new CursorPaginator($this->collection, $limit, $startAfterId);
+        return new CursorPaginator($this->collection, $limit, $startAfterId, $options);
     }
 
     public function create(PersistableDtoInterface $dto): void
