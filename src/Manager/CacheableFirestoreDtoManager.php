@@ -78,7 +78,7 @@ class CacheableFirestoreDtoManager implements DtoManagerInterface
     {
         $this->inner->create($dto);
 
-        $this->documents[$dto->getId()] = $dto;
+        $this->documents[(string) $dto->getId()] = $dto;
     }
 
     public function update(PersistableDtoInterface $dto): void
@@ -86,7 +86,7 @@ class CacheableFirestoreDtoManager implements DtoManagerInterface
         $this->inner->update($dto);
 
         if (isset($this->documents[$dto->getId()])) {
-            $this->documents[$dto->getId()] = $dto;
+            $this->documents[(string) $dto->getId()] = $dto;
         }
     }
 
@@ -94,8 +94,8 @@ class CacheableFirestoreDtoManager implements DtoManagerInterface
     {
         $this->inner->remove($dto);
 
-        if (isset($this->documents[$dto->getId()])) {
-            unset($this->documents[$dto->getId()]);
+        if (isset($this->documents[(string) $dto->getId()])) {
+            unset($this->documents[(string) $dto->getId()]);
         }
     }
 
